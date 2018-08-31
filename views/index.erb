@@ -1,0 +1,117 @@
+<div id="exchangeRate">
+</div>
+<div>
+    <label>Currency 1:</label>
+    <div>
+        <input class="form-control currency-input" type="number" id="inputCurrencyAmount" value="100"/>
+        <select class="form-control currency-select" id="selectConvertFromCurrency">
+            <option value="USD">USD</option>
+            <option value="JPY">JPY</option>
+            <option value="BGN">BGN</option>
+            <option value="CZK">CZK</option>
+            <option value="DKK">DKK</option>
+            <option value="HUF">HUF</option>
+            <option selected value="GBP">GBP</option>
+            <option value="CAD">CAD</option>
+            <!-- TODO: include all supported currencies -->
+        </select>
+    </div>
+</div>
+
+<div>
+    <label>Currency 2:</label>
+    <div>
+        <span id="convertedCurrencyAmount"></span>
+        <input class="form-control currency-input" type="number" id="inputConvertedCurrencyAmount" disabled/>
+        <select class="form-control currency-select" id="selectConvertToCurrency">
+            <option selected value="USD">USD</option>
+            <option value="JPY">JPY</option>
+            <option value="BGN">BGN</option>
+            <option value="CZK">BGN</option>
+            <option value="DKK">DKK</option>
+            <option value="HUF">HUF</option>
+            <option value="GBP">GBP</option>
+            <option value="CAD">CAD</option>
+            <!-- TODO: include all supported currencies -->
+        </select>
+    </div>
+</div>
+
+<label>Date (dd-mm-yyyy):</label>
+<input id="inputDate" type="text" class="form-control" data-toggle="datepicker">
+
+<div>
+    <button class="btn btn-block btn-primary btn-convert" id="btnConvertCurrency">Convert</button>
+</div>
+
+<script>
+    var setNumberTwoDecimalPlaces = function($input){
+        $input.val( parseFloat($input.val()).toFixed(2) );
+    };
+    $( document ).ready(function(){
+
+        // Initialize a date picker control to allow user to choose date to fetch exchange rates for.
+        $('[data-toggle="datepicker"]').datepicker({
+            format: 'dd-mm-yyyy',
+            autoHide: true,
+            autoPick: true,
+            zIndex: 2048
+        });
+
+        // Get the DOM elements we will be using to input data and display results.
+        var inputCurrencyAmount = $("#inputCurrencyAmount");
+        var inputConvertedCurrencyAmount = $("#inputConvertedCurrencyAmount");
+        var selectFromCurrency = $("#selectConvertFromCurrency");
+        var selectToCurrency = $("#selectConvertToCurrency");
+        var inputDate = $("#inputDate");
+        var btnConvert = $("#btnConvertCurrency");
+        var convertedCurrencyAmount = $("#convertedCurrencyAmount");
+
+        setNumberTwoDecimalPlaces( inputCurrencyAmount );
+
+        inputCurrencyAmount.on("change", 
+            function(ev){ this.value = parseFloat(this.value).toFixed(2); }
+        );
+
+        // Fetch the exchange rate and do conversion when user clicks on the 'Convert' button.
+        btnConvert.on("click", function(ev){
+
+            var dateString = inputDate.val();
+            var dateParts = dateString.split("-");
+            var formattedDate = dateParts[2]+"-"+dateParts[1]+"-"+dateParts[0];
+
+            var currencyAmount = inputCurrencyAmount.val();
+
+            // TODO: include timezone in date parameter
+            var formUrlEncodedData = "date=" + encodeURIComponent(formattedDate)
+                                + "&currency1=" + encodeURIComponent(selectFromCurrency.val())
+                                + "&currency2=" + encodeURIComponent(selectToCurrency.val())
+
+            // Create an AJAX request to get the exchange rate.
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/exchangerate?" + formUrlEncodedData, true);
+            xhr.send(formUrlEncodedData);
+
+            // Handle the AJAX response which should contain exchange rate for chosen currencies.
+            xhr.onreadystatechange = function(){
+                if (this.readyState === 4) {
+                    if(this.status === 200) {
+                        // Calculate amount in target currency.
+                        var amountInput = parseFloat(inputCurrencyAmount.val());
+                        var exchangeRate = parseFloat(this.responseText);
+                        // Display the exchange rate.
+                        $('#exchangeRate').text('1 ' + selectFromCurrency.val()
+                                                + ' = ' + exchangeRate.toFixed(3) + ' ' + selectToCurrency.val());
+                        // Display the amount in target currency.
+                        inputConvertedCurrencyAmount.val( (amountInput * exchangeRate).toFixed(2) );
+                    } else {
+                        console.log(this.status);
+                        if(this.status === 500) 
+                            alert('Server error: could not get exchange rate.');
+                    }
+                }
+            }
+
+        });
+    });
+</script>
