@@ -45,13 +45,52 @@
 </div>
 
 <script>
+    var DaysOfWeek = {
+        Sunday:0,
+        Monday:1,
+        Tuesday:2,
+        Wednesday:3,
+        Thursday:4,
+        Friday:5,
+        Saturday:6,
+    };
+
     var setNumberTwoDecimalPlaces = function($input){
         $input.val( parseFloat($input.val()).toFixed(2) );
     };
+
+    var setDateMostRecentWeekDay = function(date){
+        var dayOfWeek = date.getDay();
+        if(dayOfWeek === DaysOfWeek.Saturday){
+            date.setDate(date.getDate() - 1);
+        }
+        if(dayOfWeek === DaysOfWeek.Sunday){
+            date.setDate(date.getDate() - 2);
+        }
+        newDate = new Date(date);
+        return newDate;
+    };
+
+    var formatISODate = function(date){
+        year = date.getFullYear();
+        month = date.getMonth()+1;
+        dt = date.getDate();
+
+        if (dt < 10) {
+            dt = '0' + dt;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+        return year + "-" + month + "-" + dt;
+    }
+
     $( document ).ready(function(){
 
+        var datePicker = $('[data-toggle="datepicker"]');
+
         // Initialize a date picker control to allow user to choose date to fetch exchange rates for.
-        $('[data-toggle="datepicker"]').datepicker({
+        datePicker.datepicker({
             format: 'dd-mm-yyyy',
             autoHide: true,
             autoPick: true,
@@ -66,6 +105,11 @@
         var inputDate = $("#inputDate");
         var btnConvert = $("#btnConvertCurrency");
         var convertedCurrencyAmount = $("#convertedCurrencyAmount");
+
+        /* Set initial picker date to most recent weekday because 
+        exchange rates may not be published on weekend */
+        var date = setDateMostRecentWeekDay( new Date() );
+        datePicker.datepicker("setDate",date);
 
         setNumberTwoDecimalPlaces( inputCurrencyAmount );
 
