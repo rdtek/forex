@@ -7,21 +7,26 @@ Built using the [Cuba](https://github.com/soveran/cuba) framework which is based
 ![screen shot of web app](https://raw.githubusercontent.com/rdtek/forex/master/Screenshot.png)
 
 ## Install
+Use the `gem install` command to install the following dependencies:
+
 ```
 gem install cuba
 gem install tilt
 gem install rack-test
 gem install rackup
-gem install rerun # for hot reload
+gem install rerun # optional - for hot reload during development.
 ```
 
 ## Run
+Run the following command at the root of the app directory.
+This will start a server on localhost port 9292.
+Open the URL in a web browser http://localhost:9292/.
 ```
 rackup
 ```
 Or
 ```
-rerun rackup
+rerun rackup # watches for file changes and re-runs app 
 ```
 
 ## Test
