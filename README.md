@@ -3,6 +3,9 @@ Web app to fetch exchange rates and convert currency.
 
 Built using the [Cuba](https://github.com/soveran/cuba) framework which is based on [Rack](https://rack.github.io/). 
 
+## Screenshot
+![screen shot of web app](https://raw.githubusercontent.com/rdtek/forex/master/Screenshot.png)
+
 ## Install
 ```
 gem install cuba
@@ -27,5 +30,3 @@ ruby test\AppTest.rb
 ruby test\ExchangeRateServiceTest.rb
 ```
 
-## Screenshot
-![screen shot of web app](https://raw.githubusercontent.com/rdtek/forex/master/Screenshot.png)
