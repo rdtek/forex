@@ -18,9 +18,9 @@ gem install rerun # optional - to watch file changes and rerun app automatically
 ```
 
 ## Run
-Run the following command at the root of the app directory.
-This will start a server on localhost port 9292.
-Open the URL in a web browser http://localhost:9292/.
+Run the following command at the root of the app directory.  
+This will start a server on localhost port 9292.  
+Open the URL in a web browser http://localhost:9292/.  
 ```
 rackup
 ```
