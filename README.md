@@ -14,7 +14,7 @@ gem install cuba
 gem install tilt
 gem install rack-test
 gem install rackup
-gem install rerun # optional - for hot reload during development.
+gem install rerun # optional - to watch file changes and rerun app automatically during development.
 ```
 
 ## Run
